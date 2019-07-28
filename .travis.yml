@@ -23,6 +23,7 @@ before_deploy:
     - export SEMVER=`git describe --abbrev=0 --tags`
     - echo "helllo sckript"
     - echo $SEMVER
+    - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
 
 deploy:
     #    - provider: script
@@ -34,7 +35,6 @@ deploy:
     - provider: script
       skip_cleanup: true
       script:
-        - bash -c "echo $SEMVER"
         - docker push amarantin/hello-go
       on:
         #tags: true
