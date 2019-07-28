@@ -34,9 +34,10 @@ deploy:
     - provider: script
       skip_cleanup: true
       script:
+        - echo $SEMVER
         - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
         - docker push amarantin/hello-go:$SEMVER
-        - docker push amarantin/hello-go:latest
+        - docker push amarantin/hello-go
       on:
         #tags: true
         branch: master
