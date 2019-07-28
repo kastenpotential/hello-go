@@ -1,7 +1,7 @@
 language: go
 
 go:
-    - 1.12.x
+  - 1.12.x
 
 sudo: required
 
@@ -15,4 +15,11 @@ script:
 after_script:
   - docker images
 
+before_deploy:
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 
+deploy:
+  provider: script
+  script: docker push amarantin/hello-go
+  on:
+    branch: master
