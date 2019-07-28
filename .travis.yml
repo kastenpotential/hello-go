@@ -2,3 +2,17 @@ language: go
 
 go:
     - 1.12.x
+
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker build --tag amarantin/hello-go .
+  - docker run amarantin/hello-go
+
+after_script:
+  - docker images
+
+
