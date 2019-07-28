@@ -1,25 +1,28 @@
 language: go
 
 go:
-  - 1.12.x
+    - 1.12.x
 
 sudo: required
 
 services:
-  - docker
+    - docker
+
+before_script:
+    - docker pull amarantin/hello-go:latest || true
 
 script:
-  - docker build --tag amarantin/hello-go .
-  - docker run amarantin/hello-go
+    - docker build --pull --cache-from amarantin/hello-go:latest --tag amarantin/hello-go .
+    - docker run amarantin/hello-go
 
 after_script:
-  - docker images
+    - docker images
 
 before_deploy:
-  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+    - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 
 deploy:
-  provider: script
-  script: docker push amarantin/hello-go
-  on:
-    branch: master
+    provider: script
+    script: docker push amarantin/hello-go
+    on:
+        branch: master
