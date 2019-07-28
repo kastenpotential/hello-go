@@ -23,23 +23,11 @@ before_deploy:
 
 deploy:
     provider: script
-    script: docker push amarantin/hello-go
+    script: 
+        - docker push amarantin/hello-go
+        - nvm install lts/*
+        - npx semantic-release
     on:
         branch: master
-
-jobs:
-    include:
-        # Define the release stage that runs semantic-release
-        - stage: release
-            # Advanced: optionally overwrite your default `script` step to skip the tests
-            # script:
-            #   - make
-            deploy:
-                provider: script
-                skip_cleanup: true
-                script:
-                    # Use nvm to install and use the Node LTS version (nvm is installed on all Travis images)
-                    - nvm install lts/*
-                    - npx semantic-release
 
 
