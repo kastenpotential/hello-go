@@ -34,7 +34,6 @@ deploy:
     - provider: script
       skip_cleanup: true
       script:
-        - echo $SEMVER
         - docker push amarantin/hello-go
       on:
         #tags: true
