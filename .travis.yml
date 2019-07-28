@@ -20,6 +20,9 @@ after_script:
 
 before_deploy:
     - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+    - export SEMVER=`git describe --abbrev=0 --tags`
+    - echo "helllo sckript"
+    - echo $SEMVER
 
 deploy:
     #    - provider: script
@@ -31,12 +34,12 @@ deploy:
     - provider: script
       skip_cleanup: true
       script:
-        - export SEMVER=`git describe --abbrev=0 --tags`
         - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
         - docker push amarantin/hello-go:$SEMVER
         - docker push amarantin/hello-go:latest
       on:
-        tags: true
+        #tags: true
+        branch: master
 
 
 
