@@ -22,12 +22,19 @@ before_deploy:
     - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 
 deploy:
-    provider: script
-    script: 
-        - docker push amarantin/hello-go
-        - nvm install lts/*
-        - npx semantic-release
-    on:
-        branch: master
+    - provider: script
+        script:
+            - docker push amarantin/hello-go
+        on:
+            branch: master
+    - provider: script
+        script:
+            - SEMVER=`git describe --abbrev=0 --tags` 
+            - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
+            - docker push amarantin/hello-go:$SEMVER 
+            - docker push amarantin/hello-go:latest
+        on:
+            tags: true
+
 
 
