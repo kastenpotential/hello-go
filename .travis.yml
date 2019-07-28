@@ -23,11 +23,13 @@ before_deploy:
 
 deploy:
     - provider: script
+      skip_cleanup: true
       script:
         - docker push amarantin/hello-go
       on:
         branch: master
     - provider: script
+      skip_cleanup: true
       script:
         - SEMVER=`git describe --abbrev=0 --tags`
         - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
