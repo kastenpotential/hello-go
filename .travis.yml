@@ -23,18 +23,18 @@ before_deploy:
 
 deploy:
     - provider: script
-        script:
-            - docker push amarantin/hello-go
-        on:
-            branch: master
+      script:
+        - docker push amarantin/hello-go
+      on:
+        branch: master
     - provider: script
-        script:
-            - SEMVER=`git describe --abbrev=0 --tags` 
-            - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
-            - docker push amarantin/hello-go:$SEMVER 
-            - docker push amarantin/hello-go:latest
-        on:
-            tags: true
+      script:
+        - SEMVER=`git describe --abbrev=0 --tags`
+        - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
+        - docker push amarantin/hello-go:$SEMVER
+        - docker push amarantin/hello-go:latest
+      on:
+        tags: true
 
 
 
