@@ -51,3 +51,10 @@ deploy:
           - docker push amarantin/hello-go
       on:
           tags: true
+
+notifications:  
+    email:  
+        recipients:  
+            - kasten@amarantin.de
+        on_success: always  
+        on_failure: always
