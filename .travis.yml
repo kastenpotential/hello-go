@@ -41,6 +41,9 @@ deploy:
     - provider: script
       skip_cleanup: true
       script:
+          - echo "hello world"
+          - echo $PATH
+          - env
           - docker push amarantin/hello-go:latest
           #- /home/travis/gopath/bin/mage deploy
       on:
