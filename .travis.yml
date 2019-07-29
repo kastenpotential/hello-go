@@ -23,8 +23,7 @@ script:
     - docker run amarantin/hello-go
     - echo $PATH
     - which mage
-    - /home/travis/gopath/bin/mage build
-    - mage deploy 
+    - mage build
 
 after_script:
     - docker images
