@@ -1,27 +1,30 @@
-package tpoutput
+package outputs
 
 import (
-	"os"
-	"fmt"
-	"flag"
-	"time"
 	"errors"
+	"flag"
+	"fmt"
+	"os"
+	"os/signal"
 	"regexp"
 	"syscall"
-	"os/signal"
-	"../devices"
+	"time"
+
 	"github.com/influxdata/influxdb/client/v2"
+	tpdevices "github.com/kastenpotential/hello-go/tplink/devices"
 )
 
+// Influx asdfasdf
 type Influx struct {
 	Output
-	Host		string
-	Database	string
-	Measurement	string
-	Precision	string
-	Retention	string
+	Host        string
+	Database    string
+	Measurement string
+	Precision   string
+	Retention   string
 }
 
+// BuildPoints asdfasdf
 func (i *Influx) BuildPoints(devices tpdevices.TPDevices) (error, []*client.Point) {
 	var points []*client.Point
 
@@ -44,17 +47,18 @@ func (i *Influx) BuildPoints(devices tpdevices.TPDevices) (error, []*client.Poin
 	return nil, points
 }
 
+// WritePoints asdasdf
 func (i *Influx) WritePoints(points []*client.Point) error {
 	c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:	i.Host,
+		Addr: i.Host,
 	})
 	if err != nil {
 		return err
 	}
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Database:			i.Database,
-		Precision:			i.Precision,
-		RetentionPolicy:	i.Retention,
+		Database:        i.Database,
+		Precision:       i.Precision,
+		RetentionPolicy: i.Retention,
 	})
 	if err != nil {
 		return err
@@ -65,7 +69,7 @@ func (i *Influx) WritePoints(points []*client.Point) error {
 	return c.Write(bp)
 }
 
-
+// Write asdfasdf
 func (i *Influx) Write(devices tpdevices.TPDevices) error {
 	err, points := i.BuildPoints(devices)
 	if err != nil {
@@ -77,18 +81,19 @@ func (i *Influx) Write(devices tpdevices.TPDevices) error {
 	return i.WritePoints(points)
 }
 
+// New asdfasdf
 func New(host, database, measurement, precision, retention string) (error, Influx) {
 	influx := Influx{}
-	if _, err := regexp.MatchString("^https?://[^:]+:[0-9]{1,4}$",  host); err != nil {
-		return errors.New("Influx: Invalid host."), influx
+	if _, err := regexp.MatchString("^https?://[^:]+:[0-9]{1,4}$", host); err != nil {
+		return errors.New("influx: Invalid host"), influx
 	}
 	if database == "" {
 		return errors.New("Influx: Database not specified"), influx
 	}
 	switch precision {
-		case "ns", "u", "ms", "s", "m", "h", "d", "w":
-		default:
-			return errors.New("Influx: Invalid precision."), influx
+	case "ns", "u", "ms", "s", "m", "h", "d", "w":
+	default:
+		return errors.New("influx: Invalid precision"), influx
 	}
 	influx.Host = host
 	influx.Database = database
@@ -98,15 +103,16 @@ func New(host, database, measurement, precision, retention string) (error, Influ
 	return nil, influx
 }
 
+// NewFromArgs asdasdf
 func NewFromArgs() (error, Influx) {
 	influxCmds := flag.NewFlagSet("Influx Settings", flag.ExitOnError)
 
-	host		:= influxCmds.String("influx.host", "http://localhost:8086", "Influx host to use. http://IP:PORT")
-	database	:= influxCmds.String("influx.database", "", "Influx database to use")
-	measurement	:= influxCmds.String("influx.measurement", "tpmon", "Influx measurement to use")
-	precision	:= influxCmds.String("influx.precision", "s", "Influx precision to use")
-	rtpolicy	:= influxCmds.String("influx.retention", "autogen", "Influx retention policy")
-	
+	host := influxCmds.String("influx.host", "http://localhost:8086", "Influx host to use. http://IP:PORT")
+	database := influxCmds.String("influx.database", "", "Influx database to use")
+	measurement := influxCmds.String("influx.measurement", "tpmon", "Influx measurement to use")
+	precision := influxCmds.String("influx.precision", "s", "Influx precision to use")
+	rtpolicy := influxCmds.String("influx.retention", "autogen", "Influx retention policy")
+
 	influxCmds.Parse(os.Args[3:])
 	if influxCmds.Parsed() {
 		err, influx := New(*host, *database, *measurement, *precision, *rtpolicy)
@@ -115,18 +121,20 @@ func NewFromArgs() (error, Influx) {
 	return errors.New("Invalid commands"), Influx{}
 }
 
+// InfluxLoop asdfasdf
 type InfluxLoop struct {
 	*Influx
 	Interval int
 }
 
+// Write asdfasdf
 func (i *InfluxLoop) Write(devices tpdevices.TPDevices) error {
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	is_polling := 0
 	polling := make(chan int)
 	ret_err := make(chan error)
-	go func(devices tpdevices.TPDevices){
+	go func(devices tpdevices.TPDevices) {
 		for range time.Tick(time.Second * time.Duration(i.Interval)) {
 			t := time.Now()
 			polling <- 1
@@ -153,19 +161,19 @@ func (i *InfluxLoop) Write(devices tpdevices.TPDevices) error {
 		}
 		polling <- 0
 	}(devices)
-	Q:
+Q:
 	for {
 		select {
-			case x := <-c:
-				fmt.Println("Caught", x)
-				break Q
-			case x := <-polling:
-				is_polling = x
-			case x := <-ret_err:
-				if x != nil {
-					fmt.Println("Found Error", x)
-					return x
-				}
+		case x := <-c:
+			fmt.Println("Caught", x)
+			break Q
+		case x := <-polling:
+			is_polling = x
+		case x := <-ret_err:
+			if x != nil {
+				fmt.Println("Found Error", x)
+				return x
+			}
 		}
 	}
 	fmt.Println("Shutting down...")
@@ -180,16 +188,17 @@ func (i *InfluxLoop) Write(devices tpdevices.TPDevices) error {
 	return nil
 }
 
+// NewLoopFromArgs asdfasdf
 func NewLoopFromArgs() (error, InfluxLoop) {
 	influxCmds := flag.NewFlagSet("Influx Settings", flag.ExitOnError)
 
-	interval	:= influxCmds.Int("loop.interval", 5, "Influx loop interval")
-	host		:= influxCmds.String("influx.host", "http://localhost:8086", "Influx host to use. http://IP:PORT")
-	database	:= influxCmds.String("influx.database", "", "Influx database to use")
-	measurement	:= influxCmds.String("influx.measurement", "tpmon", "Influx measurement to use")
-	precision	:= influxCmds.String("influx.precision", "s", "Influx precision to use")
-	rtpolicy	:= influxCmds.String("influx.retention", "autogen", "Influx retention policy")
-	
+	interval := influxCmds.Int("loop.interval", 5, "Influx loop interval")
+	host := influxCmds.String("influx.host", "http://localhost:8086", "Influx host to use. http://IP:PORT")
+	database := influxCmds.String("influx.database", "", "Influx database to use")
+	measurement := influxCmds.String("influx.measurement", "tpmon", "Influx measurement to use")
+	precision := influxCmds.String("influx.precision", "s", "Influx precision to use")
+	rtpolicy := influxCmds.String("influx.retention", "autogen", "Influx retention policy")
+
 	influxCmds.Parse(os.Args[3:])
 	if influxCmds.Parsed() {
 		err, influx := New(*host, *database, *measurement, *precision, *rtpolicy)
@@ -198,13 +207,12 @@ func NewLoopFromArgs() (error, InfluxLoop) {
 	return errors.New("Invalid commands"), InfluxLoop{}
 }
 
-
 func init() {
-	AddOutput("influx", func() (error, Output){
+	AddOutput("influx", func() (error, Output) {
 		err, influx := NewFromArgs()
 		return err, &influx
 	})
-	AddOutput("influx-loop", func() (error, Output){
+	AddOutput("influx-loop", func() (error, Output) {
 		err, influx := NewLoopFromArgs()
 		return err, &influx
 	})

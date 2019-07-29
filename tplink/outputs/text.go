@@ -1,4 +1,5 @@
-package tpoutput
+package outputs
+
 import (
 	"github.com/kastenpotential/hello-go/tplink/devices"
 	"fmt"

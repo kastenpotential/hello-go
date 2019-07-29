@@ -1,16 +1,17 @@
-package tppoller
+package poller
 
 import (
 	"fmt"
-	"syscall"
-	"time"
 	"os"
 	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/influxdata/influxdb/client/v2"
-	"github.com/kastenpotential/hello-go/tplink/devices"
-	"github.com/kastenpotential/hello-go/tplink/outputs"
+	tpdevices "github.com/kastenpotential/hello-go/tplink/devices"
 )
 
+// RunPoll asdfasdf
 func RunPoll(devices tpdevices.TPDevices, host string, database string, measurement string, precision string, retention string) error {
 	var points []*client.Point
 
@@ -37,48 +38,49 @@ func RunPoll(devices tpdevices.TPDevices, host string, database string, measurem
 		}
 		points = append(points, pt)
 	}
-	if err := tpoutput.Influx(host, database, precision, retention, points); err != nil {
-		return err
-	}
+	// if err := tpoutput.Influx(host, database, precision, retention, points); err != nil {
+	// 	return err
+	// }
 	return nil
 }
 
+// StartPolling asdfasdf
 func StartPolling(devices tpdevices.TPDevices, interval uint8, host string, database string, measurement string, precision string, retention string) error {
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	is_polling := 0
+	isPolling := 0
 	polling := make(chan int)
-	ret_err := make(chan error)
-	go func(devices tpdevices.TPDevices){
+	retErr := make(chan error)
+	go func(devices tpdevices.TPDevices) {
 		for range time.Tick(time.Second * time.Duration(interval)) {
 			t := time.Now()
 			polling <- 1
 			fmt.Printf("[%s]: Polling...\n", t.Format("2006-01-02 15:04:05"))
 			if err := RunPoll(devices, host, database, measurement, precision, retention); err != nil {
-				ret_err <- err
+				retErr <- err
 				break
 			}
 			polling <- 0
 		}
 		polling <- 0
 	}(devices)
-	Q:
+Q:
 	for {
 		select {
-			case x := <-c:
-				fmt.Println("Caught", x)
-				break Q
-			case x := <-polling:
-				is_polling = x
-			case x := <-ret_err:
-				if x != nil {
-					fmt.Println("Found Error")
-					return x
-				}
+		case x := <-c:
+			fmt.Println("Caught", x)
+			break Q
+		case x := <-polling:
+			isPolling = x
+		case x := <-retErr:
+			if x != nil {
+				fmt.Println("Found Error")
+				return x
+			}
 		}
 	}
 	fmt.Println("Shutting down...")
-	if is_polling == 0 {
+	if isPolling == 0 {
 		return nil
 	}
 	fmt.Println("Polling in progress, waiting for update.")

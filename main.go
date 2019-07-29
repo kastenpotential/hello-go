@@ -1,10 +1,11 @@
 package main
 
 import (
-	"os"
 	"fmt"
-	"github.com/kastenpotential/hello-go/tplink/tpcmds" 
-	"github.com/kastenpotential/hello-go/tplink/tpoutput"
+	"os"
+
+	"github.com/kastenpotential/hello-go/tplink/commands"
+	tpoutput "github.com/kastenpotential/hello-go/tplink/outputs" 
 )
 
 func PrintHelp() {
@@ -12,7 +13,7 @@ func PrintHelp() {
     -l	Query devices 
     -p	Poll data 
     -P	Poll data constantly`
-    fmt.Println(help)
+	fmt.Println(help)
 }
 
 func GetOutput() (error, tpoutput.Output) {
@@ -25,30 +26,30 @@ func GetOutput() (error, tpoutput.Output) {
 
 func main() {
 	var err error
-	err, output := GetOutput()
+	err, output := GetOutput() 
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	if len(os.Args) < 3 {
-		err = tpcmds.Query(output)
+		err = commands.Query(output)
 		if err != nil {
 			os.Exit(1)
 		}
 		os.Exit(0)
 	}
 	switch os.Args[1] {
-		case "-q":
-			err = tpcmds.Query(output)
-		/*
+	case "-q":
+		err = commands.Query(output)
+	/*
 		case "-p":
 			os.Exit(tpcmds.PollDevices())
 		case "-P":
 			os.Exit(tpcmds.LoopPollDevices())
-		*/
-		default:
-			PrintHelp()
-			os.Exit(1)
+	*/
+	default:
+		PrintHelp()
+		os.Exit(1)
 	}
 	if err != nil {
 		fmt.Println(err)
