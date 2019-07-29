@@ -33,20 +33,18 @@ before_deploy:
     - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
 
 deploy:
-        - provider: script
-          skip_cleanup: true
-          script:
-            - docker push amarantin/hello-go
-            - mage deploy
-          on:
-            branch: master
     - provider: script
       skip_cleanup: true
       script:
-        - docker push amarantin/hello-go
+          - docker push amarantin/hello-go
+          - mage deploy
       on:
-        #tags: true
-        branch: master
-
-
+          branch: master
+    - provider: script
+      skip_cleanup: true
+      script:
+          - docker push amarantin/hello-go
+      on:
+          #tags: true
+          branch: master
 
