@@ -24,7 +24,7 @@ script:
     - echo $PATH
     - which mage
     - /home/travis/gopath/bin/mage build
-    - mage build
+    - mage deploy 
 
 after_script:
     - docker images
@@ -35,13 +35,14 @@ before_deploy:
     - echo "helllo sckript"
     - echo $SEMVER
     - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
+    - docker images
 
 deploy:
     - provider: script
       skip_cleanup: true
       script:
           - docker push amarantin/hello-go:latest
-          - mage deploy
+          - /home/travis/gopath/bin/mage deploy
       on:
           branch: master
     - provider: script
