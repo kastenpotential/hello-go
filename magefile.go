@@ -20,5 +20,8 @@ func Deploy() error {
 	for key, value := range os.Environ() {
 		fmt.Printf("deploy: %s => %s\n", key, value)
 	}
+	if err := sh.Run("docker", "push", "amarantin/hello-go:latest"); err != nil {
+		return err
+	}
 	return nil
 }
