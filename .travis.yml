@@ -42,7 +42,7 @@ deploy:
       skip_cleanup: true
       script:
           - docker push amarantin/hello-go:latest
-          - /home/travis/gopath/bin/mage deploy
+          #- /home/travis/gopath/bin/mage deploy
       on:
           branch: master
     - provider: script
