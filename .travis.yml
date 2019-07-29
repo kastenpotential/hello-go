@@ -8,12 +8,19 @@ sudo: required
 services:
     - docker
 
+install:
+    - go get -u -d github.com/magefile/mage
+    - cd $GOPATH/src/github.com/magefile/mage
+    - go run bootstrap.go
+
+
 before_script:
     - docker pull amarantin/hello-go:latest || true
 
 script:
     - docker build --pull --cache-from amarantin/hello-go:latest --tag amarantin/hello-go .
     - docker run amarantin/hello-go
+    - mage build
 
 after_script:
     - docker images
@@ -26,12 +33,13 @@ before_deploy:
     - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
 
 deploy:
-    #    - provider: script
-    #      skip_cleanup: true
-    #      script:
-    #        - docker push amarantin/hello-go
-    #      on:
-    #        branch: master
+        - provider: script
+          skip_cleanup: true
+          script:
+            - docker push amarantin/hello-go
+            - mage deploy
+          on:
+            branch: master
     - provider: script
       skip_cleanup: true
       script:
