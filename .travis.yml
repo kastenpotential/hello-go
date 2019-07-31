@@ -14,45 +14,30 @@ install:
     - go run bootstrap.go
     - cd $TRAVIS_BUILD_DIR
 
-
 before_script:
     - docker pull amarantin/hello-go:latest || true
 
-script:
-    - docker build --pull --cache-from amarantin/hello-go:latest --tag amarantin/hello-go .
-    - docker run amarantin/hello-go
-    - echo $PATH
-    - which mage
-    - mage build
+script: mage -v buildDockerContainer
 
 after_script:
     - docker images
 
 before_deploy:
     - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
-    - export SEMVER=`git describe --abbrev=0 --tags`
-    - echo "helllo sckript"
-    - echo $SEMVER
-    - docker tag amarantin/hello-go:latest amarantin/hello-go:$SEMVER
-    - docker images
 
 deploy:
     - provider: script
       skip_cleanup: true
-      #script: ./deploy.sh
-      script: mage deploy
+      script: mage -v deployLatest
       on:
           branch: master
     - provider: script
       skip_cleanup: true
-      script:
-          - docker push amarantin/hello-go
+      script: mage -v deployVersion
       on:
           tags: true
 
 notifications:  
     email:  
-        recipients:  
-            - kasten@amarantin.de
         on_success: always  
         on_failure: always

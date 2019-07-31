@@ -5,6 +5,9 @@ RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
 
 ENV GO111MODULE=on
+ENV GOOS=linux
+ENV GOARCH=arm
+ENV GOARM=7
 WORKDIR /go/src/hello-go
 
 COPY . .
@@ -14,7 +17,7 @@ RUN go build -v
 
 
 # STEP 2 build a small image
-FROM alpine
+FROM arm32v7/alpine
 LABEL maintainer="Sir Rob <sirrob@netsak.de>"
 
 WORKDIR /app

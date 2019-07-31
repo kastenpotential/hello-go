@@ -12,7 +12,7 @@ import (
 // Query devices
 func Query(output tpoutput.Output) error {
 	fmt.Println("Discovering devices...")
-	err, discovered, devices := tpdevices.DiscoverDevices(1)
+	err, discovered, devices := tpdevices.DiscoverDevices(10)
 	if err != nil {
 		return err
 	}
