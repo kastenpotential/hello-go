@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	_ "github.com/kastenpotential/mage-utils/gen/travis-ci"
 	"github.com/magefile/mage/sh"
 )
 

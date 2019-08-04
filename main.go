@@ -5,7 +5,8 @@ import (
 	"os"
 
 	"github.com/kastenpotential/hello-go/tplink/commands"
-	tpoutput "github.com/kastenpotential/hello-go/tplink/outputs" 
+	tpoutput "github.com/kastenpotential/hello-go/tplink/outputs"
+	_ "github.com/kastenpotential/mage-utils/gen/travis-ci"
 )
 
 func PrintHelp() {
@@ -26,7 +27,7 @@ func GetOutput() (error, tpoutput.Output) {
 
 func main() {
 	var err error
-	err, output := GetOutput() 
+	err, output := GetOutput()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
