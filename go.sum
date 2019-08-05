@@ -140,6 +140,9 @@ github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/kastenpotential/mage-utils v0.0.0-20190801192303-4766a0e69d5d h1:f1FQTU9LWhK+MCW7rK+ch9t7KsUjZlyOmr3D6t4bdOU=
 github.com/kastenpotential/mage-utils v0.0.0-20190801192303-4766a0e69d5d/go.mod h1:z9p543kfEsA68+ieIdGYjJQJ9lscoYBeXltOASW6Nro=
+github.com/kastenpotential/smarthome-core v0.0.2 h1:IrZFl39dEyndcdnM7+I7XxX6Nb9BdvdMINBn7Gpx9CY=
+github.com/kastenpotential/smarthome-core v0.0.2/go.mod h1:wW0/TaPe7FkgP3VuZ2sDclCe44LwvM3shEcROvI8Yjs=
+github.com/kastenpotential/smarthome-node v0.0.0-20190802185223-6489b088f4a9 h1:hh+hr8dNFUIESRB65VGgmBgBv3OOT4ZE6H37szSHCeo=
 github.com/kevinburke/ssh_config v0.0.0-20180830205328-81db2a75821e/go.mod h1:CT57kijsi8u/K/BOFA39wgDQJ9CxiF4nAY/ojJ6r6mM=
 github.com/kevinburke/ssh_config v0.0.0-20190630040420-2e50c441276c/go.mod h1:CT57kijsi8u/K/BOFA39wgDQJ9CxiF4nAY/ojJ6r6mM=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
